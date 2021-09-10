@@ -2,8 +2,11 @@ import axios from "axios";
 window.Vue = require("vue").default;
 
 const state = {
-    user: {},
-    errors: [],
+    user: {
+        email : '',
+        password : ''
+    },
+    errors: {},
     message: "",
     token: ""
 };
@@ -24,7 +27,10 @@ const actions = {
                 window.location.href = "/dashboard";
             })
             .catch(error => {
-                commit("setErrors", error.response.data.errors);
+                commit('setErrors', error.response.data.errors)
+                if(error.response.status === 401) {
+                    commit('setMessage',  error.response.data.message)
+                }
             });
     },
     async logout() {

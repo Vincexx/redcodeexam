@@ -2284,6 +2284,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2768,8 +2770,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js")["default"];
 var state = {
-  user: {},
-  errors: [],
+  user: {
+    email: '',
+    password: ''
+  },
+  errors: {},
   message: "",
   token: ""
 };
@@ -2801,7 +2806,11 @@ var actions = {
                 localStorage.setItem("api_token", response.data.token);
                 window.location.href = "/dashboard";
               })["catch"](function (error) {
-                commit("setErrors", error.response.data.errors);
+                commit('setErrors', error.response.data.errors);
+
+                if (error.response.status === 401) {
+                  commit('setMessage', error.response.data.message);
+                }
               });
 
             case 3:
@@ -40762,10 +40771,16 @@ var render = function() {
                           _c(
                             "v-alert",
                             {
-                              attrs: {
-                                type: "error",
-                                value: _vm.message ? true : false
-                              }
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.message,
+                                  expression: "message"
+                                }
+                              ],
+                              staticClass: "mx-2",
+                              attrs: { type: "error", value: true }
                             },
                             [
                               _vm._v(
